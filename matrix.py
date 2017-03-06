@@ -6,10 +6,10 @@ except ImportError:
 
 class Matrix(list):
     def __init__(self, seq=()):
-        self.rowlen = -1
-        super().__init__(Row(x) for x in seq)
-        if super().__len__() > 0:
-            self.rowlen = len(self[0])
+        super().__init__()
+        self.rowlen = 0
+        for row in seq:
+            self.append(row)
 
     # append row
     def append(self, row):
