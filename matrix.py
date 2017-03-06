@@ -1,10 +1,13 @@
-from .row import Row, LenMismatchError
+try:
+    from row import Row, LenMismatchError
+except ImportError:
+    from .row import Row, LenMismatchError
 
 
 class Matrix(list):
     def __init__(self, seq=()):
         self.rowlen = -1
-        super().__init__((Row(x) for x in seq))
+        super().__init__(Row(x) for x in seq)
         if super().__len__() > 0:
             self.rowlen = len(self[0])
 

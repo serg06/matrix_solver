@@ -3,10 +3,10 @@ from fractions import Fraction
 
 class Row(list):
     def __init__(self, seq=()):
-        super().__init__((Fraction(x) for x in seq))
+        super().__init__(Fraction(x) for x in seq)
 
     def row_reduce(self):
-        if self == Row(0 for x in self):
+        if self == [0 for x in self]:
             return
         divide_amt = [x for x in self if x != 0][0]
         new = self / divide_amt
@@ -14,20 +14,20 @@ class Row(list):
             self[i] = new[i]
 
     def __mul__(self, other):
-        return Row(map(lambda x: x * other, self[:]))
+        return Row(map(lambda x: x * other, self))
 
     def __truediv__(self, other):
-        return Row(map(lambda x: x / other, self[:]))
+        return Row(map(lambda x: x / other, self))
 
     def __add__(self, other):
         if len(self) != len(other):
             raise LenMismatchError()
-        return Row((self[i] + other[i] for i in range(len(self))))
+        return Row(self[i] + other[i] for i in range(len(self)))
 
     def __sub__(self, other):
         if len(self) != len(other):
             raise LenMismatchError()
-        return Row((self[i] - other[i] for i in range(len(self))))
+        return Row(self[i] - other[i] for i in range(len(self)))
 
     def __str__(self):
         def int_or_float(x):
