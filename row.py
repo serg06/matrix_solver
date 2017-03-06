@@ -1,5 +1,8 @@
 from fractions import Fraction
 
+# decimals to round to
+round_to = 3
+
 
 class Row(list):
     def __init__(self, seq=()):
@@ -30,11 +33,14 @@ class Row(list):
         return Row(self[i] - other[i] for i in range(len(self)))
 
     def __str__(self):
+        global round_to
+
         def int_or_float(x):
             if x == int(x):
                 return int(x)
             else:
-                return float(x)
+                return float("%.{}f".format(round_to) % float(x))
+
         return str([int_or_float(x) for x in self])
 
 
