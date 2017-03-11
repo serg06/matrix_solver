@@ -55,6 +55,36 @@ class Matrix(list):
             scale_by = self[rowi][the_coli]
             self[rowi] = self[rowi] - (self[the_rowi] * scale_by)
 
+    def __mul__(self, other):
+        if self.rowlen != len(other):
+            raise LenMismatchError("Error: A's row lengths and B's column lengths don't match.")
+
+        if len(self) == 0:
+            return self
+
+        return Matrix(
+            # resulting matrix
+            [
+                # each row of resulting matrix
+                [
+                    # each entry of row
+                    sum([
+                        # each product of A & B
+                        self[A_row_index][matching_index] * other[matching_index][B_col_index]
+
+                        # for each matching col in A & row in B
+                        for matching_index in range(self.rowlen)
+                    ])
+
+                    # for each column in B
+                    for B_col_index in range(other.rowlen)
+                ]
+
+                # for each row in A
+                for A_row_index in range(len(self))
+            ]
+        )
+
     def __str__(self):
         result = ''
         if len(self) == 0 or self.rowlen == 0:

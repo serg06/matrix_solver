@@ -1,6 +1,9 @@
 # IntelliJ PyCharm
 .idea
 
+# For running ezily
+main.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
