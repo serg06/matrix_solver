@@ -48,15 +48,7 @@ class Matrix(list):
 
         return self
 
-    # subtract given row from every other row so that it is the only non-0 item in the column
-    def _gauss_subtract(self, the_rowi: int, the_coli: int):
-        for rowi in range(len(self)):
-            # skip given row
-            if rowi == the_rowi:
-                continue
-            scale_by = self[rowi][the_coli]
-            self[rowi] = self[rowi] - (self[the_rowi] * scale_by)
-
+    # invert self
     def inverse(self):
         if len(self) != self.rowlen:
             raise LenMismatchError("Error: Cannot invert matrix with different row and column lengths.")
@@ -67,15 +59,24 @@ class Matrix(list):
 
         return self
 
+    # subtract given row from every other row so that it is the only non-0 item in the column
+    def _gauss_subtract(self, the_rowi: int, the_coli: int):
+        for rowi in range(len(self)):
+            # skip given row
+            if rowi == the_rowi:
+                continue
+            scale_by = self[rowi][the_coli]
+            self[rowi] = self[rowi] - (self[the_rowi] * scale_by)
+
+    # extend matrix with identity equivalent on the right
     def _append_right_identity(self):
-        # extend matrix with identity equivalent on the right
         for row_num, row in enumerate(self):
             row.extend([0 if col_num != row_num else 1 for col_num in range(self.rowlen)])
 
         self.rowlen *= 2
 
+    # remove identity half (on the left)
     def _delete_left_identity(self):
-        # remove identity half (on the left)
         self.rowlen = int(self.rowlen/2)
 
         for row_num, row in enumerate(self):
