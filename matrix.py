@@ -46,6 +46,8 @@ class Matrix(list):
             if finished_rows == len(self):
                 break
 
+        return self
+
     # subtract given row from every other row so that it is the only non-0 item in the column
     def _gauss_subtract(self, the_rowi: int, the_coli: int):
         for rowi in range(len(self)):
@@ -54,6 +56,31 @@ class Matrix(list):
                 continue
             scale_by = self[rowi][the_coli]
             self[rowi] = self[rowi] - (self[the_rowi] * scale_by)
+
+    def inverse(self):
+        if len(self) != self.rowlen:
+            raise LenMismatchError("Error: Cannot invert matrix with different row and column lengths.")
+
+        self._append_right_identity()
+        self.gauss_jordan()
+        self._delete_left_identity()
+
+        return self
+
+    def _append_right_identity(self):
+        # extend matrix with identity equivalent on the right
+        for row_num, row in enumerate(self):
+            row.extend([0 if col_num != row_num else 1 for col_num in range(self.rowlen)])
+
+        self.rowlen *= 2
+
+    def _delete_left_identity(self):
+        # remove identity half (on the left)
+        self.rowlen = int(self.rowlen/2)
+
+        for row_num, row in enumerate(self):
+            for col_num in range(self.rowlen):
+                row.pop(0)
 
     def __mul__(self, other):
         if self.rowlen != len(other):
@@ -92,3 +119,6 @@ class Matrix(list):
         for row in self:
             result += str(row) + '\n'
         return result[:-1]
+
+    def copy(self):
+        return Matrix(super().copy())
