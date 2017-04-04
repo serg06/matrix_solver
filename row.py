@@ -35,13 +35,21 @@ class Row(list):
     def __str__(self):
         global round_to
 
-        def int_or_float(x):
+        # convert fraction to int or float, depending on whether it has decimals
+        def to_readable_float(x):
             if x == int(x):
                 return int(x)
             else:
                 return float("%.{}f".format(round_to) % float(x))
 
-        return str([int_or_float(x) for x in self])
+        # convert fraction to int or readable fraction (num/den)
+        def to_readable_fraction(x):
+            if x == int(x):
+                return int(x)
+            else:
+                return "{}/{}".format(x.numerator, x.denominator)
+
+        return str([to_readable_fraction(x) for x in self]).replace("'","")
 
 
 class LenMismatchError(Exception):

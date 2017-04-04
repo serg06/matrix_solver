@@ -59,6 +59,12 @@ class Matrix(list):
 
         return self
 
+    def scale(self, by):
+        for rowi in range(len(self)):
+            self[rowi] = self[rowi]*by
+
+        return self
+
     # subtract given row from every other row so that it is the only non-0 item in the column
     def _gauss_subtract(self, the_rowi: int, the_coli: int):
         for rowi in range(len(self)):
@@ -77,7 +83,7 @@ class Matrix(list):
 
     # remove identity half (on the left)
     def _delete_left_identity(self):
-        self.rowlen = int(self.rowlen/2)
+        self.rowlen = int(self.rowlen / 2)
 
         for row_num, row in enumerate(self):
             for col_num in range(self.rowlen):
@@ -97,20 +103,20 @@ class Matrix(list):
                 [
                     # each entry of row
                     sum([
-                        # each product of A & B
-                        self[A_row_index][matching_index] * other[matching_index][B_col_index]
+                            # each product of A & B
+                            self[A_row_index][matching_index] * other[matching_index][B_col_index]
 
-                        # for each matching col in A & row in B
-                        for matching_index in range(self.rowlen)
-                    ])
+                            # for each matching col in A & row in B
+                            for matching_index in range(self.rowlen)
+                            ])
 
                     # for each column in B
                     for B_col_index in range(other.rowlen)
-                ]
+                    ]
 
                 # for each row in A
                 for A_row_index in range(len(self))
-            ]
+                ]
         )
 
     def __str__(self):
@@ -121,5 +127,36 @@ class Matrix(list):
             result += str(row) + '\n'
         return result[:-1]
 
+    def __add__(self, other):
+        if len(self) != len(other) or self.rowlen != other.rowlen:
+            raise LenMismatchError()
+
+        if len(self) == 0:
+            return self
+
+        s = self.copy()
+
+        for rowi in range(len(self)):
+            for coli in range(self.rowlen):
+                s[rowi][coli] += other[rowi][coli]
+
+        return s
+
+
+    def __sub__(self, other):
+        o = other.copy()
+        return self.__add__(o.scale(-1))
+
     def copy(self):
         return Matrix(super().copy())
+
+
+# identity
+def identity(size: int):
+    return Matrix([
+        [
+            1 if i == j else 0
+            for i in range(size)
+        ]
+        for j in range(size)
+    ])
