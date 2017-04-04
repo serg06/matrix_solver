@@ -65,6 +65,27 @@ class Matrix(list):
 
         return self
 
+    def determinant(self):
+        if len(self) != self.rowlen:
+            raise LenMismatchError()
+        if len(self) < 2:
+            raise LenMismatchError()
+        if len(self) == 2:
+            return (self[0][0] * self[1][1]) - (self[0][1] * self[1][0])
+
+        return sum((
+            (((-1)**coli) * self[0][coli] * Matrix((
+                (self[rowi][0:coli] + self[rowi][coli+1:]) for rowi in range(1, len(self))
+            )).determinant()) for coli in range(len(self))
+        ))
+
+# todo: in progress
+#    def get_eigenvalues(self):
+#        p = Polynomial()
+#        for rowi in range(len(self)):
+#            for coli in range(self.rowlen):
+#                p *=
+
     # subtract given row from every other row so that it is the only non-0 item in the column
     def _gauss_subtract(self, the_rowi: int, the_coli: int):
         for rowi in range(len(self)):
@@ -141,7 +162,6 @@ class Matrix(list):
                 s[rowi][coli] += other[rowi][coli]
 
         return s
-
 
     def __sub__(self, other):
         o = other.copy()
