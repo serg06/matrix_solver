@@ -73,6 +73,11 @@ class Matrix(list):
         if len(self) == 2:
             return (self[0][0] * self[1][1]) - (self[0][1] * self[1][0])
 
+        for i in range(len(self)):
+            # if ith row or ith column is all 0s
+            if not any(self[i]) or not any((self[rowi][i] for rowi in range(i))):
+                return 0
+
         return sum((
             (((-1)**coli) * self[0][coli] * Matrix((
                 (self[rowi][0:coli] + self[rowi][coli+1:]) for rowi in range(1, len(self))

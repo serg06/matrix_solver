@@ -9,7 +9,8 @@ class Row(list):
         super().__init__(Fraction(x) for x in seq)
 
     def row_reduce(self):
-        if self == [0 for x in self]:
+        # if all 0s
+        if not any(self):
             return
         divide_amt = [x for x in self if x != 0][0]
         new = self / divide_amt
