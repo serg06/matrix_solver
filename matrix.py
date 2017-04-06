@@ -28,6 +28,8 @@ class Matrix(list):
         self[i1] = self[i2]
         self[i2] = temp
 
+        return self
+
     # perform gauss-jordan elimination on the matrix
     def gauss_jordan(self):
         finished_rows = 0
@@ -68,8 +70,10 @@ class Matrix(list):
     def determinant(self):
         if len(self) != self.rowlen:
             raise LenMismatchError()
-        if len(self) < 2:
+        if len(self) < 1:
             raise LenMismatchError()
+        if len(self) == 1:
+            return self[0][0]
         if len(self) == 2:
             return (self[0][0] * self[1][1]) - (self[0][1] * self[1][0])
 
@@ -172,8 +176,27 @@ class Matrix(list):
         o = other.copy()
         return self.__add__(o.scale(-1))
 
+    def __pow__(self, power: int, modulo=None):
+        if power == 0:
+            raise NotImplementedError()
+        if power < 0:
+            return self.copy().inverse()**((-1)*power)
+        if power == 1:
+            return self
+        return self*(self**(power-1))
+
     def copy(self):
         return Matrix(super().copy())
+
+
+def from_string(num_rows, num_cols, string):
+    vals = [val for val in string.split() if val != '']
+    if len(vals) != num_rows*num_cols:
+        raise LenMismatchError()
+    return Matrix((
+        vals[rowi * num_cols : (rowi+1) * num_cols]
+        for rowi in range(num_rows)
+    ))
 
 
 # identity
